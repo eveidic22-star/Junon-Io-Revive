@@ -148,14 +148,20 @@
   }
   .back-btn:hover { color: #fff; }
 
-  .google-btn {
+  /* Кнопки авторизации */
+  .google-btn, .incognito-btn {
     display: flex; align-items: center; justify-content: center; gap: 10px;
-    background-color: #db4437; color: white; border: none; border-radius: 4px;
+    color: white; border: none; border-radius: 4px;
     padding: 12px; font-size: 16px; font-weight: bold; cursor: pointer;
-    font-family: 'Pixelify Sans', monospace; width: 100%; margin-top: 10px; transition: background-color 0.2s;
+    font-family: 'Pixelify Sans', monospace; width: 100%; margin-top: 5px; transition: background-color 0.2s;
   }
+  .google-btn { background-color: #db4437; }
   .google-btn:hover { background-color: #c53929; }
   .google-btn img { width: 20px; height: 20px; background: white; padding: 2px; border-radius: 50%; }
+  
+  .incognito-btn { background-color: #555; }
+  .incognito-btn:hover { background-color: #666; }
+  .incognito-btn::before { content: '🕶️'; font-size: 18px; }
 
   .settings-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #333; }
   .settings-row:last-child { border-bottom: none; }
@@ -274,9 +280,9 @@
     <div class="side-panel">
       <div class="changelog-date" data-en="November 13, 2026" data-ru="13 Ноября, 2026">November 13, 2026</div>
       <ul class="changelog-list">
+        <li data-en="Added Incognito mode (Guest login)" data-ru="Добавлен режим Инкогнито (Гостевой вход)">Added Incognito mode (Guest login)</li>
         <li data-en="Multiplayer network sync added!" data-ru="Добавлена сетевая синхронизация игроков!">Multiplayer network sync added!</li>
         <li data-en="Added Online tracking for worlds" data-ru="Добавлено отслеживание онлайна миров">Added Online tracking for worlds</li>
-        <li data-en="Added Global Worlds tab" data-ru="Добавлена вкладка глобальных миров">Added Global Worlds tab</li>
       </ul>
     </div>
     <div class="center-panel">
@@ -308,9 +314,14 @@
   <div class="modal-window">
     <button class="back-btn" id="btnBackLoginOptions">✕</button>
     <div class="modal-title" data-en="Sign In" data-ru="Вход">Sign In</div>
+    
     <button class="google-btn" id="btnGoogleSignIn">
       <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
       <span data-en="Sign in with Google" data-ru="Войти через Google">Sign in with Google</span>
+    </button>
+    
+    <button class="incognito-btn" id="btnIncognitoSignIn">
+      <span data-en="Play as Incognito" data-ru="Играть Инкогнито">Play as Incognito</span>
     </button>
   </div>
 </div>
@@ -392,7 +403,7 @@
 <!-- ПОДКЛЮЧЕНИЕ FIREBASE SDK (v10) -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   import { getFirestore, doc, getDoc, setDoc, collection, query, where, getDocs, addDoc, serverTimestamp, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -413,7 +424,6 @@
   window.firebaseDb = db;
   window.googleProvider = new GoogleAuthProvider();
 
-  // --- СЕТЕВОЙ КОД ---
   let playersUnsubscribe = null;
 
   window.signInWithGoogle = async () => {
@@ -423,6 +433,17 @@
     } catch (error) {
       console.error("Ошибка входа:", error);
       alert("Ошибка входа: " + error.message);
+      return null;
+    }
+  };
+
+  window.signInIncognito = async () => {
+    try {
+      const result = await signInAnonymously(auth);
+      return result.user;
+    } catch (error) {
+      console.error("Ошибка анонимного входа:", error);
+      alert("Ошибка: " + error.message);
       return null;
     }
   };
@@ -502,14 +523,10 @@
     }
   };
 
-  // Вход в мир (сеть)
   window.joinWorldNetwork = (worldId, uid, nickname, callback) => {
     const playersRef = collection(db, "worlds", worldId, "players");
-    
-    // Создаем себя в базе
     setDoc(doc(playersRef, uid), { x: 0, y: 0, angle: 0, nickname: nickname, lastUpdate: Date.now() }, { merge: true });
 
-    // Подписываемся на обновления всех игроков
     playersUnsubscribe = onSnapshot(playersRef, (snapshot) => {
       const players = {};
       snapshot.forEach(docSnap => {
@@ -521,13 +538,11 @@
     });
   };
 
-  // Обновление своей позиции
   window.updateMyPosition = (worldId, uid, x, y, angle) => {
     if(!worldId || !uid) return;
     setDoc(doc(db, "worlds", worldId, "players", uid), { x, y, angle, lastUpdate: Date.now() }, { merge: true });
   };
 
-  // Выход из мира (сеть)
   window.leaveWorldNetwork = (worldId, uid) => {
     if (playersUnsubscribe) {
       playersUnsubscribe();
@@ -541,6 +556,13 @@
   window.signOutUser = () => signOut(auth);
 
   onAuthStateChanged(auth, (user) => {
+    // Если это анонимный пользователь, мы не хотим, чтобы он сохранялся после перезагрузки.
+    // При загрузке страницы принудительно выходим, чтобы при F5 сбрасывался ник.
+    if (user && user.isAnonymous && !sessionStorage.getItem('isIncognitoActive')) {
+        signOut(auth);
+        return;
+    }
+
     if (window.onAuthStateChangedCallback) {
       window.onAuthStateChangedCallback(user);
     }
@@ -556,8 +578,8 @@
   let currentUser = null;
   let currentTab = "my"; 
   let currentWorldId = null; 
+  let isIncognito = false;
 
-  // Для мультиплеера
   let otherPlayers = {};
   let lastNetUpdate = 0;
 
@@ -619,6 +641,11 @@
     
     let worlds = [];
     if (currentTab === 'my') {
+      // Если мы в инкогнито, у нас нет сохраненных миров
+      if (isIncognito) {
+          renderWorlds([]);
+          return;
+      }
       worlds = await window.fetchUserWorlds(currentUser.uid);
     } else {
       worlds = await window.fetchGlobalWorlds();
@@ -631,9 +658,14 @@
     const lang = document.getElementById('langSelect').value;
     
     if (worlds.length === 0) {
-      const msg = currentTab === 'my' 
-        ? (lang === 'ru' ? 'Миров нет. Создайте новый!' : 'No worlds found. Create a new one!')
-        : (lang === 'ru' ? 'Нет активных миров' : 'No active worlds');
+      let msg = '';
+      if (currentTab === 'my') {
+          msg = isIncognito 
+            ? (lang === 'ru' ? 'В режиме инкогнито нельзя создавать миры. Перейдите во вкладку Global.' : 'Cannot create worlds in Incognito. Check the Global tab.')
+            : (lang === 'ru' ? 'Миров нет. Создайте новый!' : 'No worlds found. Create a new one!');
+      } else {
+          msg = (lang === 'ru' ? 'Нет активных миров' : 'No active worlds');
+      }
       worldsGrid.innerHTML = `<div style="color:#888; font-size:14px; padding:10px;">${msg}</div>`;
       return;
     }
@@ -674,32 +706,59 @@
 
   document.getElementById('btnGoogleSignIn').addEventListener('click', async () => {
     modalLoginOptions.style.display = 'none'; 
+    sessionStorage.removeItem('isIncognitoActive'); // Сбрасываем флаг инкогнито
     await window.signInWithGoogle();
+  });
+
+  // ВХОД В ИНКОГНИТО
+  document.getElementById('btnIncognitoSignIn').addEventListener('click', async () => {
+    modalLoginOptions.style.display = 'none';
+    sessionStorage.setItem('isIncognitoActive', 'true');
+    isIncognito = true;
+    // Генерируем случайный ник (Гость_XXXX)
+    playerName = "Guest_" + Math.random().toString(36).substring(2, 6).toUpperCase();
+    await window.signInIncognito();
   });
 
   // ЛОГАУТ
   document.getElementById('btnLogout').addEventListener('click', () => {
+    sessionStorage.removeItem('isIncognitoActive');
+    if (currentWorldId) window.setWorldStatus(currentWorldId, false);
     window.signOutUser();
+    setTimeout(() => window.location.reload(), 500); // Перезагружаем страницу для полного сброса
   });
 
   // СОСТОЯНИЕ ВХОДА
   window.onAuthStateChangedCallback = async (user) => {
     currentUser = user;
     if (user) {
-      const nickname = await window.getUserNickname(user.uid);
-      if (nickname) {
-        playerName = nickname;
+      if (user.isAnonymous) {
+        // Это инкогнито
+        isIncognito = true;
         document.getElementById('btnLogin').textContent = playerName;
         document.getElementById('btnLogout').style.display = 'block';
+        document.getElementById('btnNewGame').style.display = 'none'; // Скрываем создание мира
       } else {
-        modalChooseNick.style.display = 'flex';
+        // Это Google Auth
+        isIncognito = false;
+        document.getElementById('btnNewGame').style.display = 'block';
+        const nickname = await window.getUserNickname(user.uid);
+        if (nickname) {
+          playerName = nickname;
+          document.getElementById('btnLogin').textContent = playerName;
+          document.getElementById('btnLogout').style.display = 'block';
+        } else {
+          modalChooseNick.style.display = 'flex';
+        }
       }
       loadWorlds();
     } else {
       playerName = "Player";
+      isIncognito = false;
       const lang = document.getElementById('langSelect').value;
       document.getElementById('btnLogin').textContent = lang === 'ru' ? 'Войти' : 'Login';
       document.getElementById('btnLogout').style.display = 'none';
+      document.getElementById('btnNewGame').style.display = 'block';
       renderWorlds([]);
     }
   };
@@ -731,6 +790,10 @@
       alert("Сначала войдите в аккаунт!");
       return;
     }
+    if (isIncognito) {
+      alert("В режиме инкогнито нельзя создавать миры!");
+      return;
+    }
     modalNewGame.style.display = 'flex';
   });
   
@@ -740,7 +803,7 @@
   
   document.getElementById('btnStartGame').addEventListener('click', async () => {
     const name = document.getElementById('inputColonyName').value.trim();
-    if(name && currentUser) {
+    if(name && currentUser && !isIncognito) {
       modalNewGame.style.display = 'none';
       const newWorldId = await window.createWorld(name, currentUser.uid);
       if (newWorldId) {
@@ -763,36 +826,25 @@
   // === СТАРТ ИГРЫ ===
   window.startGame = async function(worldName = "New World", worldId = null) {
     currentWorldId = worldId;
-    
-    // Очищаем старых игроков
     otherPlayers = {};
 
     if (currentWorldId && currentUser) {
-      // Включаем статус онлайна мира
       await window.setWorldStatus(currentWorldId, true);
       
-      // Подключаемся к сети игроков в этом мире
       window.joinWorldNetwork(currentWorldId, currentUser.uid, playerName, (players) => {
-        // Эта функция вызывается каждый раз, когда кто-то заходит/выходит/двигается
         for (let id in players) {
           if (!otherPlayers[id]) {
-            // Если игрок новый, добавляем его в наш список
             otherPlayers[id] = { 
-              x: players[id].x, 
-              y: players[id].y, 
-              targetX: players[id].x, 
-              targetY: players[id].y, 
-              angle: players[id].angle, 
-              nickname: players[id].nickname 
+              x: players[id].x, y: players[id].y, 
+              targetX: players[id].x, targetY: players[id].y, 
+              angle: players[id].angle, nickname: players[id].nickname 
             };
           } else {
-            // Если игрок уже есть, обновляем его целевую позицию (для плавности)
             otherPlayers[id].targetX = players[id].x;
             otherPlayers[id].targetY = players[id].y;
             otherPlayers[id].angle = players[id].angle;
           }
         }
-        // Удаляем тех, кто вышел
         for (let id in otherPlayers) {
           if (!players[id]) delete otherPlayers[id];
         }
@@ -1017,7 +1069,6 @@
   function releaseJoy(e) { if(e.pointerId!==joyId) return; joyId=null; joyX=joyY=0; stick.style.left="50%"; stick.style.top="50%"; }
   joy.addEventListener("pointerup", releaseJoy); joy.addEventListener("pointercancel", releaseJoy); window.addEventListener("pointerup", releaseJoy); window.addEventListener("pointercancel", releaseJoy);
 
-  // Отрисовка любого игрока (и себя, и других)
   function drawPlayer(p, isLocal) {
     if(!bodyImg.complete || !handsImg.complete) return;
     ctx.save(); 
@@ -1025,17 +1076,13 @@
     ctx.rotate(p.angle);
     
     const hw=16, hh=11, scale=1.22; const handW=hw*scale, handH=hh*scale; const forwardOffset = 10;
-    
-    // Руки
     ctx.drawImage(handsImg, 0,0,16,11, -handW + 2, forwardOffset, handW,handH); 
     ctx.drawImage(handsImg,16,0,16,11, -2, forwardOffset, handW,handH);
-    // Тело
     const bw=30*scale, bh=37*scale; ctx.drawImage(bodyImg, -bw/2, -bh/2, bw,bh);
     
-    // Если это другой игрок, рисуем его ник над головой
     if (!isLocal && p.nickname) {
-      ctx.rotate(-p.angle); // Возвращаем горизонтальный вид для текста
-      ctx.fillStyle = "#fff";
+      ctx.rotate(-p.angle); 
+      ctx.fillStyle = isIncognito ? "#aaa" : "#fff"; // Ник инкогнито серый
       ctx.font = "12px 'Pixelify Sans'";
       ctx.textAlign = "center";
       ctx.fillText(p.nickname, 0, -30);
@@ -1051,7 +1098,6 @@
     const dt=Math.min((now-last)/1000, .033); last=now;
     if (fpsCounter.style.display === 'block') { frames++; if (now - fpsLast >= 1000) { fpsCounter.textContent = `FPS: ${frames}`; frames = 0; fpsLast = now; } }
     
-    // --- Локальное движение ---
     let ix = 0, iy = 0;
     if (!isInventoryOpen && !isChatFocused) { ix = (keys['KeyD']||keys['ArrowRight']?1:0) - (keys['KeyA']||keys['ArrowLeft']?1:0) + joyX; iy = (keys['KeyS']||keys['ArrowDown']?1:0) - (keys['KeyW']||keys['ArrowUp']?1:0) + joyY; }
     const mag=Math.hypot(ix,iy); if(mag>1){ ix/=mag; iy/=mag; }
@@ -1059,43 +1105,33 @@
     player.vx += (targetVX-player.vx)*Math.min(1,smoothing*dt); player.vy += (targetVY-player.vy)*Math.min(1,smoothing*dt);
     player.x += player.vx*dt; player.y += player.vy*dt;
     
-    // Камера
     camera.x += (player.x - camera.x) * 15 * dt; camera.y += (player.y - camera.y) * 15 * dt;
     const playerScreenX = w/2 + (player.x - camera.x); const playerScreenY = h/2 + (player.y - camera.y);
     
-    // Направление взгляда
     if (!isInventoryOpen && !isChatFocused) { 
       const dx = pointerX - playerScreenX; const dy = pointerY - playerScreenY; 
       if(pointerActive && Math.hypot(dx,dy) > 4) player.angle = Math.atan2(dy,dx) - Math.PI/2; 
     }
 
-    // --- СЕТЕВОЕ ОБНОВЛЕНИЕ (Раз в 100 мс) ---
     if (now - lastNetUpdate > 100 && currentWorldId && currentUser) {
       window.updateMyPosition(currentWorldId, currentUser.uid, player.x, player.y, player.angle);
       lastNetUpdate = now;
     }
 
-    // --- Отрисовка ---
     ctx.fillStyle = "#e8ebe6"; ctx.fillRect(0,0,w,h);
     ctx.save(); ctx.fillStyle = bgPattern; ctx.translate(-camera.x % 64, -camera.y % 64); ctx.fillRect(-64, -64, w + 128, h + 128); ctx.restore();
     
-    // 1. Рисуем других игроков (с интерполяцией для плавности)
     for (let id in otherPlayers) {
       let op = otherPlayers[id];
-      // Плавно двигаем их к целевой позиции из базы
       op.x += (op.targetX - op.x) * 10 * dt;
       op.y += (op.targetY - op.y) * 10 * dt;
-      
       let screenX = w/2 + (op.x - camera.x);
       let screenY = h/2 + (op.y - camera.y);
-      
       drawPlayer({ x: screenX, y: screenY, angle: op.angle, nickname: op.nickname }, false);
     }
 
-    // 2. Рисуем себя
     drawPlayer({ x: playerScreenX, y: playerScreenY, angle: player.angle }, true);
     
-    // Облачко чата
     if (playerChatBubble.style.opacity === '1') { 
       playerChatBubble.style.left = playerScreenX + 'px'; 
       playerChatBubble.style.top = (playerScreenY - 35) + 'px'; 
@@ -1104,7 +1140,6 @@
     requestAnimationFrame(frame);
   }
 
-  // Первичная инициализация языка
   changeLanguage('en');
 
 })();
