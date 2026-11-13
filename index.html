@@ -40,9 +40,7 @@
 
   .stars { position: absolute; inset: 0; pointer-events: none; background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 100px 100px; opacity: 0.1; }
 
-  .user-controls {
-    position: absolute; top: 20px; left: 20px; z-index: 10; display: flex; gap: 10px;
-  }
+  .user-controls { position: absolute; top: 20px; left: 20px; z-index: 10; display: flex; gap: 10px; }
 
   .login-btn {
     background: var(--login-btn); border: 2px solid #7a3838;
@@ -51,7 +49,6 @@
     cursor: pointer; transition: all 0.1s; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.2);
   }
   .login-btn:hover { background: var(--accent-hover); }
-  
   .logout-btn { background: #444; border-color: #222; }
   .logout-btn:hover { background: #555; }
 
@@ -75,8 +72,7 @@
   .side-panel {
     background: rgba(20, 22, 28, 0.85); border: 1px solid var(--border);
     border-radius: 4px; padding: 15px; font-size: 14px; width: 300px;
-    display: flex; flex-direction: column; gap: 10px; height: fit-content;
-    backdrop-filter: blur(4px);
+    display: flex; flex-direction: column; gap: 10px; height: fit-content; backdrop-filter: blur(4px);
   }
   .changelog-date { color: #a55; font-size: 12px; margin-bottom: 5px; }
   .changelog-list { margin: 0; padding-left: 15px; color: #999; font-size: 12px; line-height: 1.5; }
@@ -89,7 +85,6 @@
   }
 
   .top-bar { padding: 15px; display: flex; gap: 10px; align-items: center; justify-content: center; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
-  
   .btn {
     background: #4a3c2e; border: 2px solid #2b2218; color: #fff;
     padding: 8px 16px; border-radius: 4px; cursor: pointer;
@@ -98,31 +93,22 @@
   }
   .btn:hover { background: #5c4b3a; }
   .btn:active { transform: scale(0.96); }
-  
   .btn-primary { background: var(--accent); border-color: #7a3838; }
   .btn-primary:hover { background: var(--accent-hover); }
 
   .select-lang {
     background: transparent; border: 1px solid var(--border); color: #fff;
-    padding: 8px; border-radius: 4px; font-family: 'Pixelify Sans'; font-size: 16px;
-    outline: none; cursor: pointer;
+    padding: 8px; border-radius: 4px; font-family: 'Pixelify Sans'; font-size: 16px; outline: none; cursor: pointer;
   }
 
   .worlds-container { padding: 15px; display: flex; flex-direction: column; gap: 10px; }
-  
-  /* Вкладки миров */
-  .worlds-header {
-    display: flex; gap: 20px; border-bottom: 1px solid var(--border);
-    margin-bottom: 10px; padding-bottom: 0;
-  }
+  .worlds-header { display: flex; gap: 20px; border-bottom: 1px solid var(--border); margin-bottom: 10px; padding-bottom: 0; }
   .world-tab {
     font-size: 20px; color: #777; cursor: pointer; padding-bottom: 8px;
     transition: color 0.2s; user-select: none; margin-bottom: -1px;
   }
   .world-tab:hover { color: #bbb; }
-  .world-tab.active {
-    color: #fff; border-bottom: 2px solid #fff;
-  }
+  .world-tab.active { color: #fff; border-bottom: 2px solid #fff; }
   
   .worlds-grid {
     display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -131,15 +117,11 @@
   .world-card { background: #111; border: 1px solid #333; border-radius: 4px; overflow: hidden; cursor: pointer; transition: border-color 0.2s; position: relative; }
   .world-card:hover { border-color: var(--gold); }
   .world-thumb { width: 100%; aspect-ratio: 16/9; background: #2c3e50; display: flex; align-items: center; justify-content: center; position: relative; }
-  
-  /* Индикатор онлайна в углу карточки */
   .online-badge {
-    position: absolute; top: 5px; left: 5px;
-    background: rgba(0,0,0,0.7); color: #fff; font-size: 12px;
+    position: absolute; top: 5px; left: 5px; background: rgba(0,0,0,0.7); color: #fff; font-size: 12px;
     padding: 2px 6px; border-radius: 4px; display: flex; align-items: center; gap: 4px;
   }
   .online-badge::before { content: '👤'; font-size: 10px; }
-
   .world-info { padding: 8px; }
   .world-name { color: #fff; font-size: 16px; font-weight: bold; margin-bottom: 4px; word-break: break-word; }
   .world-day { color: #888; font-size: 12px; }
@@ -147,29 +129,22 @@
   /* === МОДАЛЬНЫЕ ОКНА === */
   .modal-overlay {
     position: fixed; inset: 0; background: rgba(0,0,0,0.7);
-    display: none; align-items: center; justify-content: center; z-index: 1000;
-    backdrop-filter: blur(2px);
+    display: none; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(2px);
   }
   .modal-window {
-    background: #181a1f; border: 2px solid #333;
-    width: 90%; max-width: 420px; padding: 25px;
-    display: flex; flex-direction: column; gap: 15px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.8);
-    position: relative;
+    background: #181a1f; border: 2px solid #333; width: 90%; max-width: 420px; padding: 25px;
+    display: flex; flex-direction: column; gap: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); position: relative;
   }
   .modal-title { font-size: 20px; color: #fff; text-align: center; text-transform: uppercase; font-weight: bold; }
   .modal-input {
     background: #000; border: 1px solid #444; color: #fff;
-    padding: 10px; border-radius: 4px; font-family: 'Pixelify Sans'; font-size: 16px; outline: none;
-    width: 100%;
+    padding: 10px; border-radius: 4px; font-family: 'Pixelify Sans'; font-size: 16px; outline: none; width: 100%;
   }
   .modal-input:focus { border-color: var(--gold); }
   .modal-actions { display: flex; justify-content: center; gap: 10px; margin-top: 5px; }
   
   .back-btn {
-    position: absolute; top: 10px; right: 10px;
-    background: transparent; border: none; color: #888;
-    font-size: 20px; cursor: pointer;
+    position: absolute; top: 10px; right: 10px; background: transparent; border: none; color: #888; font-size: 20px; cursor: pointer;
   }
   .back-btn:hover { color: #fff; }
 
@@ -177,16 +152,12 @@
     display: flex; align-items: center; justify-content: center; gap: 10px;
     background-color: #db4437; color: white; border: none; border-radius: 4px;
     padding: 12px; font-size: 16px; font-weight: bold; cursor: pointer;
-    font-family: 'Pixelify Sans', monospace; width: 100%; margin-top: 10px;
-    transition: background-color 0.2s;
+    font-family: 'Pixelify Sans', monospace; width: 100%; margin-top: 10px; transition: background-color 0.2s;
   }
   .google-btn:hover { background-color: #c53929; }
   .google-btn img { width: 20px; height: 20px; background: white; padding: 2px; border-radius: 50%; }
 
-  .settings-row {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 10px 0; border-bottom: 1px solid #333;
-  }
+  .settings-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #333; }
   .settings-row:last-child { border-bottom: none; }
   .settings-label { font-size: 16px; color: #ccc; }
   
@@ -303,12 +274,9 @@
     <div class="side-panel">
       <div class="changelog-date" data-en="November 13, 2026" data-ru="13 Ноября, 2026">November 13, 2026</div>
       <ul class="changelog-list">
+        <li data-en="Multiplayer network sync added!" data-ru="Добавлена сетевая синхронизация игроков!">Multiplayer network sync added!</li>
         <li data-en="Added Online tracking for worlds" data-ru="Добавлено отслеживание онлайна миров">Added Online tracking for worlds</li>
         <li data-en="Added Global Worlds tab" data-ru="Добавлена вкладка глобальных миров">Added Global Worlds tab</li>
-        <li data-en="Added World Saving via Firestore" data-ru="Добавлено сохранение миров через Firestore">Added World Saving via Firestore</li>
-        <li data-en="Added Logout button" data-ru="Добавлена кнопка выхода">Added Logout button</li>
-        <li data-en="Added Google Auth & Firestore" data-ru="Добавлена авторизация Google и Firestore">Added Google Auth & Firestore</li>
-        <li data-en="Chat system and overhead speech bubbles" data-ru="Система чата и всплывающие облачка текста">Chat system and overhead speech bubbles</li>
       </ul>
     </div>
     <div class="center-panel">
@@ -425,9 +393,8 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, doc, getDoc, setDoc, collection, query, where, getDocs, addDoc, serverTimestamp, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, setDoc, collection, query, where, getDocs, addDoc, serverTimestamp, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  // Твоя конфигурация Firebase
   const firebaseConfig = {
     apiKey: "AIzaSyCw7-X48R0YUrB2A8XDuILbzWl1rcoTx60",
     authDomain: "junon-io-revive.firebaseapp.com",
@@ -445,6 +412,9 @@
   window.firebaseAuth = auth;
   window.firebaseDb = db;
   window.googleProvider = new GoogleAuthProvider();
+
+  // --- СЕТЕВОЙ КОД ---
+  let playersUnsubscribe = null;
 
   window.signInWithGoogle = async () => {
     try {
@@ -478,7 +448,6 @@
     }
   };
 
-  // Создание нового мира (по умолчанию оффлайн)
   window.createWorld = async (worldName, uid) => {
     try {
       const docRef = await addDoc(collection(db, "worlds"), {
@@ -488,14 +457,13 @@
         day: 1,
         isOnline: false
       });
-      return docRef.id; // Возвращаем ID созданного мира
+      return docRef.id;
     } catch(e) {
       console.error("Ошибка создания мира: ", e);
       return null;
     }
   };
 
-  // Изменение статуса мира (онлайн/оффлайн)
   window.setWorldStatus = async (worldId, isOnline) => {
     try {
       await updateDoc(doc(db, "worlds", worldId), { isOnline: isOnline });
@@ -504,7 +472,6 @@
     }
   };
 
-  // Получение миров пользователя
   window.fetchUserWorlds = async (uid) => {
     try {
       const q = query(collection(db, "worlds"), where("owner", "==", uid));
@@ -520,7 +487,6 @@
     }
   };
 
-  // Получение глобальных (активных) миров
   window.fetchGlobalWorlds = async () => {
     try {
       const q = query(collection(db, "worlds"), where("isOnline", "==", true));
@@ -533,6 +499,42 @@
     } catch(e) {
       console.error("Ошибка загрузки глобальных миров: ", e);
       return [];
+    }
+  };
+
+  // Вход в мир (сеть)
+  window.joinWorldNetwork = (worldId, uid, nickname, callback) => {
+    const playersRef = collection(db, "worlds", worldId, "players");
+    
+    // Создаем себя в базе
+    setDoc(doc(playersRef, uid), { x: 0, y: 0, angle: 0, nickname: nickname, lastUpdate: Date.now() }, { merge: true });
+
+    // Подписываемся на обновления всех игроков
+    playersUnsubscribe = onSnapshot(playersRef, (snapshot) => {
+      const players = {};
+      snapshot.forEach(docSnap => {
+        if (docSnap.id !== uid) { 
+          players[docSnap.id] = docSnap.data();
+        }
+      });
+      callback(players);
+    });
+  };
+
+  // Обновление своей позиции
+  window.updateMyPosition = (worldId, uid, x, y, angle) => {
+    if(!worldId || !uid) return;
+    setDoc(doc(db, "worlds", worldId, "players", uid), { x, y, angle, lastUpdate: Date.now() }, { merge: true });
+  };
+
+  // Выход из мира (сеть)
+  window.leaveWorldNetwork = (worldId, uid) => {
+    if (playersUnsubscribe) {
+      playersUnsubscribe();
+      playersUnsubscribe = null;
+    }
+    if (worldId && uid) {
+      deleteDoc(doc(db, "worlds", worldId, "players", uid));
     }
   };
 
@@ -552,8 +554,12 @@
 
   let playerName = "Player";
   let currentUser = null;
-  let currentTab = "my"; // 'my' или 'global'
-  let currentWorldId = null; // ID мира, в котором мы находимся
+  let currentTab = "my"; 
+  let currentWorldId = null; 
+
+  // Для мультиплеера
+  let otherPlayers = {};
+  let lastNetUpdate = 0;
 
   // === СИСТЕМА ПЕРЕВОДА ===
   function changeLanguage(lang) {
@@ -635,8 +641,6 @@
     worlds.forEach(world => {
       const card = document.createElement('div');
       card.className = 'world-card';
-      
-      // Показываем иконку онлайна только в глобальной вкладке (или если мир онлайн)
       const badgeHTML = world.isOnline ? `<div class="online-badge">1</div>` : '';
       
       card.innerHTML = `
@@ -651,7 +655,6 @@
       `;
       
       card.addEventListener('click', () => {
-        // Заходим в мир
         startGame(world.name, world.id);
       });
       worldsGrid.appendChild(card);
@@ -676,7 +679,6 @@
 
   // ЛОГАУТ
   document.getElementById('btnLogout').addEventListener('click', () => {
-    if (currentWorldId) window.setWorldStatus(currentWorldId, false); // Выключаем мир
     window.signOutUser();
   });
 
@@ -698,7 +700,7 @@
       const lang = document.getElementById('langSelect').value;
       document.getElementById('btnLogin').textContent = lang === 'ru' ? 'Войти' : 'Login';
       document.getElementById('btnLogout').style.display = 'none';
-      renderWorlds([]); // Очищаем
+      renderWorlds([]);
     }
   };
 
@@ -742,11 +744,9 @@
       modalNewGame.style.display = 'none';
       const newWorldId = await window.createWorld(name, currentUser.uid);
       if (newWorldId) {
-        // Переключаемся на "Мои миры" и обновляем
         currentTab = 'my';
         updateTabsUI();
         loadWorlds();
-        // Запускаем игру
         startGame(name, newWorldId);
       }
     }
@@ -762,12 +762,41 @@
 
   // === СТАРТ ИГРЫ ===
   window.startGame = async function(worldName = "New World", worldId = null) {
-    console.log("Loading world:", worldName);
     currentWorldId = worldId;
     
-    // Помечаем мир как онлайн
-    if (currentWorldId) {
+    // Очищаем старых игроков
+    otherPlayers = {};
+
+    if (currentWorldId && currentUser) {
+      // Включаем статус онлайна мира
       await window.setWorldStatus(currentWorldId, true);
+      
+      // Подключаемся к сети игроков в этом мире
+      window.joinWorldNetwork(currentWorldId, currentUser.uid, playerName, (players) => {
+        // Эта функция вызывается каждый раз, когда кто-то заходит/выходит/двигается
+        for (let id in players) {
+          if (!otherPlayers[id]) {
+            // Если игрок новый, добавляем его в наш список
+            otherPlayers[id] = { 
+              x: players[id].x, 
+              y: players[id].y, 
+              targetX: players[id].x, 
+              targetY: players[id].y, 
+              angle: players[id].angle, 
+              nickname: players[id].nickname 
+            };
+          } else {
+            // Если игрок уже есть, обновляем его целевую позицию (для плавности)
+            otherPlayers[id].targetX = players[id].x;
+            otherPlayers[id].targetY = players[id].y;
+            otherPlayers[id].angle = players[id].angle;
+          }
+        }
+        // Удаляем тех, кто вышел
+        for (let id in otherPlayers) {
+          if (!players[id]) delete otherPlayers[id];
+        }
+      });
     }
 
     mainMenu.style.display = 'none';
@@ -775,6 +804,7 @@
     isGameRunning = true;
     resize();
     last = performance.now();
+    lastNetUpdate = performance.now();
     requestAnimationFrame(frame);
   }
 
@@ -784,20 +814,19 @@
     gameContainer.style.display = 'none';
     mainMenu.style.display = 'flex';
     
-    // Помечаем мир как оффлайн
     if (currentWorldId) {
+      window.leaveWorldNetwork(currentWorldId, currentUser ? currentUser.uid : null);
       await window.setWorldStatus(currentWorldId, false);
       currentWorldId = null;
     }
+    otherPlayers = {};
     
-    // Обновляем список миров
     loadWorlds();
   }
 
-  // Попытка сохранить статус при закрытии вкладки
   window.addEventListener("beforeunload", (e) => {
-    if (currentWorldId) {
-        // Firestore updateDoc — асинхронный, но браузер может успеть отправить запрос
+    if (currentWorldId && currentUser) {
+        window.leaveWorldNetwork(currentWorldId, currentUser.uid);
         window.setWorldStatus(currentWorldId, false);
     }
   });
@@ -967,11 +996,7 @@
   window.addEventListener("keydown", e => {
     if (!isGameRunning || isChatFocused) return;
     
-    // ВЫХОД ИЗ ИГРЫ И ОБНОВЛЕНИЕ СТАТУСА
-    if (e.code === 'Escape') { 
-        exitGame(); 
-        return; 
-    }
+    if (e.code === 'Escape') { exitGame(); return; }
     
     if (e.key === '/' || e.code === 'Slash') { e.preventDefault(); chatInput.focus(); showChat(); return; }
     if (e.code === 'KeyE') { toggleInventory(); return; }
@@ -992,12 +1017,30 @@
   function releaseJoy(e) { if(e.pointerId!==joyId) return; joyId=null; joyX=joyY=0; stick.style.left="50%"; stick.style.top="50%"; }
   joy.addEventListener("pointerup", releaseJoy); joy.addEventListener("pointercancel", releaseJoy); window.addEventListener("pointerup", releaseJoy); window.addEventListener("pointercancel", releaseJoy);
 
-  function drawPlayer(sx,sy) {
+  // Отрисовка любого игрока (и себя, и других)
+  function drawPlayer(p, isLocal) {
     if(!bodyImg.complete || !handsImg.complete) return;
-    ctx.save(); ctx.translate(sx,sy); ctx.rotate(player.angle);
+    ctx.save(); 
+    ctx.translate(p.x, p.y); 
+    ctx.rotate(p.angle);
+    
     const hw=16, hh=11, scale=1.22; const handW=hw*scale, handH=hh*scale; const forwardOffset = 10;
-    ctx.drawImage(handsImg, 0,0,16,11, -handW + 2, forwardOffset, handW,handH); ctx.drawImage(handsImg,16,0,16,11, -2, forwardOffset, handW,handH);
+    
+    // Руки
+    ctx.drawImage(handsImg, 0,0,16,11, -handW + 2, forwardOffset, handW,handH); 
+    ctx.drawImage(handsImg,16,0,16,11, -2, forwardOffset, handW,handH);
+    // Тело
     const bw=30*scale, bh=37*scale; ctx.drawImage(bodyImg, -bw/2, -bh/2, bw,bh);
+    
+    // Если это другой игрок, рисуем его ник над головой
+    if (!isLocal && p.nickname) {
+      ctx.rotate(-p.angle); // Возвращаем горизонтальный вид для текста
+      ctx.fillStyle = "#fff";
+      ctx.font = "12px 'Pixelify Sans'";
+      ctx.textAlign = "center";
+      ctx.fillText(p.nickname, 0, -30);
+    }
+    
     ctx.restore();
   }
 
@@ -1007,19 +1050,57 @@
     if (!isGameRunning) return;
     const dt=Math.min((now-last)/1000, .033); last=now;
     if (fpsCounter.style.display === 'block') { frames++; if (now - fpsLast >= 1000) { fpsCounter.textContent = `FPS: ${frames}`; frames = 0; fpsLast = now; } }
+    
+    // --- Локальное движение ---
     let ix = 0, iy = 0;
     if (!isInventoryOpen && !isChatFocused) { ix = (keys['KeyD']||keys['ArrowRight']?1:0) - (keys['KeyA']||keys['ArrowLeft']?1:0) + joyX; iy = (keys['KeyS']||keys['ArrowDown']?1:0) - (keys['KeyW']||keys['ArrowUp']?1:0) + joyY; }
     const mag=Math.hypot(ix,iy); if(mag>1){ ix/=mag; iy/=mag; }
     const targetVX=ix*player.speed, targetVY=iy*player.speed; const smoothing = (ix||iy) ? 13 : 16;
     player.vx += (targetVX-player.vx)*Math.min(1,smoothing*dt); player.vy += (targetVY-player.vy)*Math.min(1,smoothing*dt);
     player.x += player.vx*dt; player.y += player.vy*dt;
+    
+    // Камера
     camera.x += (player.x - camera.x) * 15 * dt; camera.y += (player.y - camera.y) * 15 * dt;
     const playerScreenX = w/2 + (player.x - camera.x); const playerScreenY = h/2 + (player.y - camera.y);
-    if (playerChatBubble.style.opacity === '1') { playerChatBubble.style.left = playerScreenX + 'px'; playerChatBubble.style.top = (playerScreenY - 35) + 'px'; }
-    if (!isInventoryOpen && !isChatFocused) { const dx = pointerX - playerScreenX; const dy = pointerY - playerScreenY; if(pointerActive && Math.hypot(dx,dy) > 4) player.angle = Math.atan2(dy,dx) - Math.PI/2; }
+    
+    // Направление взгляда
+    if (!isInventoryOpen && !isChatFocused) { 
+      const dx = pointerX - playerScreenX; const dy = pointerY - playerScreenY; 
+      if(pointerActive && Math.hypot(dx,dy) > 4) player.angle = Math.atan2(dy,dx) - Math.PI/2; 
+    }
+
+    // --- СЕТЕВОЕ ОБНОВЛЕНИЕ (Раз в 100 мс) ---
+    if (now - lastNetUpdate > 100 && currentWorldId && currentUser) {
+      window.updateMyPosition(currentWorldId, currentUser.uid, player.x, player.y, player.angle);
+      lastNetUpdate = now;
+    }
+
+    // --- Отрисовка ---
     ctx.fillStyle = "#e8ebe6"; ctx.fillRect(0,0,w,h);
     ctx.save(); ctx.fillStyle = bgPattern; ctx.translate(-camera.x % 64, -camera.y % 64); ctx.fillRect(-64, -64, w + 128, h + 128); ctx.restore();
-    drawPlayer(playerScreenX, playerScreenY);
+    
+    // 1. Рисуем других игроков (с интерполяцией для плавности)
+    for (let id in otherPlayers) {
+      let op = otherPlayers[id];
+      // Плавно двигаем их к целевой позиции из базы
+      op.x += (op.targetX - op.x) * 10 * dt;
+      op.y += (op.targetY - op.y) * 10 * dt;
+      
+      let screenX = w/2 + (op.x - camera.x);
+      let screenY = h/2 + (op.y - camera.y);
+      
+      drawPlayer({ x: screenX, y: screenY, angle: op.angle, nickname: op.nickname }, false);
+    }
+
+    // 2. Рисуем себя
+    drawPlayer({ x: playerScreenX, y: playerScreenY, angle: player.angle }, true);
+    
+    // Облачко чата
+    if (playerChatBubble.style.opacity === '1') { 
+      playerChatBubble.style.left = playerScreenX + 'px'; 
+      playerChatBubble.style.top = (playerScreenY - 35) + 'px'; 
+    }
+
     requestAnimationFrame(frame);
   }
 
