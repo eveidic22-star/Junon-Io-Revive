@@ -905,6 +905,11 @@
   const bodyImg = new Image(), handsImg = new Image();
   bodyImg.src = BODY_SRC; handsImg.src = HANDS_SRC;
 
+  // Текстуры тела и рук без скафандра.
+  const bareBodyImg = new Image(), bareHandsImg = new Image();
+  bareBodyImg.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAADeElEQVRIDZWWW2sTURSFT5r0lob6t8QHqZKHkoqPIuLPkSJ96IMoBJEiKuKL/6nSmDRx2nF9Z2ZNdiexrRsm55x9WWtfznTaSf8h396dlrtbW6m7sZGurq/Tr+k0LYoiHb541bkvTO8ux5/j9yWgyMOjg5RmlymJNC0WaSpCyMfpuMROEkcvX99K/k/j2elJCcDw8HFKewOhibRb5zcXqWwQIlu9XibD//On77eSriUcnxyXgDwZqSKt6VIEe/2UfouA6qhY4OwLkc5ULZVaIEXWVbtC+OHtm3L07GlFMF+kBFBX60w83SL1rpQA5H+KdHF+3szThP2dnZxkoSQ/jr+skN4ghOxg+Cj1B2ohFewKmPYhPqu1xWSSL4tJMLPviaxUtcyc9iLtFjeEJiOQdnbIdFPPXG2krZKyvpXb2OQHeBSTsHqPPZLWt2AZtr2/X81sU6bZpJnhVC1yMr6dRG1rjnMRQ0CivtFLxJu7PGlXR0C+iayaUW6jwAC0TETMu4gvZCQCCWcuzzphTHBgy4QG6EGEKFtuHwIgAiBV4OuWnWuW7cpsi3PMAPVPB+bR86EuiObCS63ZcMNoH9Ww8gBgMmINTCL4sbbFSVrPLCsvnGmhgHMb5eE2tYEhR+fV7yD+CCTYTBZ9sVeEEKn/pYI6dYDnQVUAcHaFnC1xjy5W6rZCan1F2K0AOgKnnTggECCuwoG2Q8beZ0DxjSvxtrOvCNXOXF0AIMgZGtg6g7o6VttI0rOHwLHskao0WqmX+aK+mc66PRcCAACUBzvk+LMi6PDhscQKs7bAWY5uobNykDN2xVQDCHZi7O8EHAchfvhbMiGO+YZKm/e1lUCegarnY0sVBjeQwU3spIGIvjVkyn9L/ZcGpcs3kKsxAT4xKc6eH3uTsEfwRff17Ef+ciwbXdnzr8kg4SHIbfHMrDcoa4wzMX5RVr4WGJkZrXHmJnMCBkFvHXEmYe/K8HF16JfT5FQLZAARFFcT2c8z9ZkVAvTM3aTR3lSIsj1LAhAyd7uiLhvrH5JxotYTE7+F6G8QooiknF0hRGRtYmyIq4aMUSAeQZsM2wohSkhZ+Y5F4dVAHvT7DRFnCNw+EoCIxO71TxQAlna16JnPTP9cDficBYGofUGCudmurbCxauNq0cWK3UrPyTHrqrKN9U7C6BzJo/4ukuj7F390w055mP7dAAAAAElFTkSuQmCC";
+  bareHandsImg.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAJCAYAAAAl45yBAAABNklEQVQ4Ea2TzUrDQBCAp7EEe+nNx/EtPAiCZxHxYUSKeJKipYh3wZPQlxARkSClmKBhU1tJa8Z8G1cTRajRhbCbzMz3bfanIaU2OOvrNE0lNEY2tnYapVDt4cnBvq6029LyfVldW//OvDztqWqcP6rP0a1SUNv2XggDVtFixVFhXvS6qmmUx43OpoHO4uDPcieFBRM2DlxWfn58VHzUiRWSqJORRsMrfXm8q/XnSKmFAcvK4eYOJoDTY09FliUJh5LO5/KaZZKMx3ZSRayyOAu/uFpYMGHjwEXMg5SEgQ0QXPI8O6b3m82FRV8TqS2zYBfy4DO1vB8cBvNwo0+j61rL7KgwYcCC+eO56R92NDP3NpnEbmevegId8Rc9DFhMADYOV165VySyPLT/vMfw2OfN7d0P3xvcqTvUEVaztAAAAABJRU5ErkJggg==";
+
   let w=0, h=0, dpr=1;
   function resize() {
     dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -1070,16 +1075,36 @@
   joy.addEventListener("pointerup", releaseJoy); joy.addEventListener("pointercancel", releaseJoy); window.addEventListener("pointerup", releaseJoy); window.addEventListener("pointercancel", releaseJoy);
 
   function drawPlayer(p, isLocal) {
-    if(!bodyImg.complete || !handsImg.complete) return;
-    ctx.save(); 
-    ctx.translate(p.x, p.y); 
+    // Скафандр надет, пока предмет находится в специальном слоте костюма.
+    const suitEquipped = suitItem.parentElement === costumeSlot;
+    if (suitEquipped) {
+      if (!bodyImg.complete || !handsImg.complete) return;
+    } else {
+      if (!bareBodyImg.complete || !bareHandsImg.complete) return;
+    }
+
+    ctx.save();
+    ctx.translate(p.x, p.y);
     ctx.rotate(p.angle);
-    
-    const hw=16, hh=11, scale=1.22; const handW=hw*scale, handH=hh*scale; const forwardOffset = 10;
-    ctx.drawImage(handsImg, 0,0,16,11, -handW + 2, forwardOffset, handW,handH); 
-    ctx.drawImage(handsImg,16,0,16,11, -2, forwardOffset, handW,handH);
-    const bw=30*scale, bh=37*scale; ctx.drawImage(bodyImg, -bw/2, -bh/2, bw,bh);
-    
+
+    const scale = 1.22;
+    const forwardOffset = 10;
+
+    if (suitEquipped) {
+      const handW = 16 * scale, handH = 11 * scale;
+      ctx.drawImage(handsImg, 0, 0, 16, 11, -handW + 2, forwardOffset, handW, handH);
+      ctx.drawImage(handsImg, 16, 0, 16, 11, -2, forwardOffset, handW, handH);
+      const bw = 30 * scale, bh = 37 * scale;
+      ctx.drawImage(bodyImg, -bw / 2, -bh / 2, bw, bh);
+    } else {
+      // Пользовательские PNG: тело 28×28, обе руки в одной текстуре 30×9.
+      const handW = 9 * scale, handH = 9 * scale;
+      ctx.drawImage(bareHandsImg, 0, 0, 9, 9, -handW + 2, forwardOffset + 1, handW, handH);
+      ctx.drawImage(bareHandsImg, 21, 0, 9, 9, -2, forwardOffset + 1, handW, handH);
+      const bw = 28 * scale, bh = 28 * scale;
+      ctx.drawImage(bareBodyImg, -bw / 2, -bh / 2, bw, bh);
+    }
+
     if (!isLocal && p.nickname) {
       ctx.rotate(-p.angle); 
       ctx.fillStyle = isIncognito ? "#aaa" : "#fff"; // Ник инкогнито серый
